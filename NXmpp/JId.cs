@@ -21,7 +21,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 
-namespace NXmpp.Core
+namespace NXmpp
 {
 	public class JId {
 

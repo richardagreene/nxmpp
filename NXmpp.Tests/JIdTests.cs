@@ -1,9 +1,8 @@
-﻿using System;
+using System;
 using System.Text;
 using NUnit.Framework;
-using NXmpp.Core;
 
-namespace NXmpp.Tests.Core
+namespace NXmpp.Tests
 {
 	[TestFixture]
 	public class JIdTests

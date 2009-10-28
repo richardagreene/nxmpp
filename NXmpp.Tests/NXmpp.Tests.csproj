@@ -63,7 +63,7 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Core\JIdTests.cs" />
+    <Compile Include="JIdTests.cs" />
     <Compile Include="XmppClientTests.cs" />
     <Compile Include="Net\XmppDnsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
