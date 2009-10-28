@@ -17,13 +17,14 @@
 #endregion
 
 using System.Net;
-using Xunit;
+using NUnit.Framework;
 
 namespace NXmpp.Dns.Windows.Tests
 {
+	[TestFixture]
 	public class WmiDnsServerLookupTests
 	{
-		[Fact]
+		[Test]
 		public void CanRetrieveDnsServers()
 		{
 			//this test assumes the system has a working network connection with dns servers setup either manually or via DHCP

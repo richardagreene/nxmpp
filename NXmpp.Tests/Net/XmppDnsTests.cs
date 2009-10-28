@@ -16,27 +16,27 @@
 
 #endregion
 
-using System.Net;
-using System.Net.Sockets;
 using Common.Logging;
 using Moq;
+using NUnit.Framework;
 using NXmpp.Dns;
 using NXmpp.Dns.Windows;
 using NXmpp.Net;
-using Xunit;
 
 namespace NXmpp.Tests.Net
 {
+	[TestFixture]
 	public class XmppDnsTests
 	{
-		private readonly ILog _logger;
+		private ILog _logger;
 
-		public XmppDnsTests()
+		[SetUp]
+		public void Setup()
 		{
 			_logger = new Mock<ILog>(MockBehavior.Loose).Object;
 		}
 
-		[Fact]
+		[Test]
 		public void Get_hosts_should_call_dependency_factory_methods()
 		{
 			var dnsServerLookupFactoryMock = new Mock<IDnsServerLookupFactory>();
@@ -54,7 +54,7 @@ namespace NXmpp.Tests.Net
 			dnsQueryRequestFactoryMock.Verify(m => m.Create());
 		}
 
-		[Fact]
+		[Test]
 		public void When_no_dns_servers_respond_should_return_domain_as_host()
 		{
 			var dnsServerLookupFactoryMock = new Mock<IDnsServerLookupFactory>();
@@ -67,11 +67,11 @@ namespace NXmpp.Tests.Net
 			XmppHost[] xmppHosts = XmppDns.GetHosts(dnsServerLookupFactoryMock.Object, dnsQueryRequestFactoryMock.Object, domain, _logger);
 
 			Assert.NotNull(xmppHosts);
-			Assert.Equal(1, xmppHosts.Length);
-			Assert.Equal(domain, xmppHosts[0].HostName);
+			Assert.AreEqual(1, xmppHosts.Length);
+			Assert.AreEqual(domain, xmppHosts[0].HostName);
 		}
 
-		[Fact]
+		[Test]
 		public void When_srv_query_returns_response_should_return_XmppHosts() //test requires internet connection.
 		{
 			const string domain = "gmail.com";
@@ -79,7 +79,7 @@ namespace NXmpp.Tests.Net
 			XmppHost[] xmppHosts = XmppDns.GetHosts(new WmiDnsServerLookupFactory(), new DnDnsQueryRequestFactory(), domain, _logger);
 			Assert.NotNull(xmppHosts);
 			Assert.True(xmppHosts.Length > 1);
-			Assert.Equal(domain, xmppHosts[xmppHosts.Length - 1].HostName);
+			Assert.AreEqual(domain, xmppHosts[xmppHosts.Length - 1].HostName);
 		}
 	}
 }
