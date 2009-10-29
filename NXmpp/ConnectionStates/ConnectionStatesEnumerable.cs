@@ -1,8 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using NXmpp.Core;
-using NXmpp.Dns;
-using NXmpp.Net;
 
 namespace NXmpp.ConnectionStates {
 	/// <summary>
@@ -12,7 +10,7 @@ namespace NXmpp.ConnectionStates {
 	{
 		private readonly IXmppContext _context;
 
-		internal ConnectionStatesEnumerable(IXmppContext context, IDnsServerLookupFactory dnsServerLookupFactory, IDnsQueryRequestFactory dnsQueryRequestFactory)
+		internal ConnectionStatesEnumerable(IXmppContext context)
 		{
 			_context = context;
 		}
@@ -20,7 +18,7 @@ namespace NXmpp.ConnectionStates {
 		#region IEnumerable<ConnectionStateBase> Members
 
 		public IEnumerator<ConnectionStateBase> GetEnumerator() {
-			ConnectionStateBase connectionState = new TcpBindingState(_context, null, null);
+			ConnectionStateBase connectionState = new TcpBindingState(_context);
 			yield return connectionState;
 			while (connectionState.NextState != null) {
 				connectionState = connectionState.NextState;

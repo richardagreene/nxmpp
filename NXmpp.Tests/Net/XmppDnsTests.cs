@@ -19,8 +19,6 @@
 using Common.Logging;
 using Moq;
 using NUnit.Framework;
-using NXmpp.Dns;
-using NXmpp.Dns.Windows;
 using NXmpp.Net;
 
 namespace NXmpp.Tests.Net
@@ -28,6 +26,8 @@ namespace NXmpp.Tests.Net
 	[TestFixture]
 	public class XmppDnsTests
 	{
+		//These tests require a working internet connection, because of XmppDns dependency on System.Net.NetworkInformation.NetworkInterface.GetAllNetworkInterfaces()
+
 		private ILog _logger;
 
 		[SetUp]
@@ -39,32 +39,26 @@ namespace NXmpp.Tests.Net
 		[Test]
 		public void Get_hosts_should_call_dependency_factory_methods()
 		{
-			var dnsServerLookupFactoryMock = new Mock<IDnsServerLookupFactory>();
-			dnsServerLookupFactoryMock.Setup(m => m.Create()).Returns(() => new Mock<IDnsServerLookup>().Object);
-
 			var dnsQueryRequestFactoryMock = new Mock<IDnsQueryRequestFactory>();
 			dnsQueryRequestFactoryMock.Setup(m => m.Create()).Returns(() => new Mock<IDnsQueryRequest>(MockBehavior.Loose).Object);
 
 			try
 			{
-				XmppDns.GetHosts(dnsServerLookupFactoryMock.Object, dnsQueryRequestFactoryMock.Object, "domain", _logger);
+				XmppDns.GetHosts(dnsQueryRequestFactoryMock.Object, "domain", _logger);
 			}
 			catch {}
-			dnsServerLookupFactoryMock.Verify(m => m.Create());
 			dnsQueryRequestFactoryMock.Verify(m => m.Create());
 		}
 
 		[Test]
 		public void When_no_dns_servers_respond_should_return_domain_as_host()
 		{
-			var dnsServerLookupFactoryMock = new Mock<IDnsServerLookupFactory>();
-			dnsServerLookupFactoryMock.Setup(m => m.Create()).Returns(() => new Mock<IDnsServerLookup>().Object);
 
 			var dnsQueryRequestFactoryMock = new Mock<IDnsQueryRequestFactory>();
 			dnsQueryRequestFactoryMock.Setup(m => m.Create()).Returns(() => new Mock<IDnsQueryRequest>(MockBehavior.Loose).Object);
 
 			const string domain = "domain.com";
-			XmppHost[] xmppHosts = XmppDns.GetHosts(dnsServerLookupFactoryMock.Object, dnsQueryRequestFactoryMock.Object, domain, _logger);
+			XmppHost[] xmppHosts = XmppDns.GetHosts(dnsQueryRequestFactoryMock.Object, domain, _logger);
 
 			Assert.NotNull(xmppHosts);
 			Assert.AreEqual(1, xmppHosts.Length);
@@ -76,7 +70,7 @@ namespace NXmpp.Tests.Net
 		{
 			const string domain = "gmail.com";
 
-			XmppHost[] xmppHosts = XmppDns.GetHosts(new WmiDnsServerLookupFactory(), new DnDnsQueryRequestFactory(), domain, _logger);
+			XmppHost[] xmppHosts = XmppDns.GetHosts(new DnDnsQueryRequestFactory(), domain, _logger);
 			Assert.NotNull(xmppHosts);
 			Assert.True(xmppHosts.Length > 1);
 			Assert.AreEqual(domain, xmppHosts[xmppHosts.Length - 1].HostName);
