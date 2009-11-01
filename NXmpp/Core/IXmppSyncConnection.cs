@@ -18,7 +18,7 @@
 
 using System.Xml.Linq;
 
-namespace NXmpp.Sasl
+namespace NXmpp.Core
 {
 	internal interface IXmppSyncConnection
 	{

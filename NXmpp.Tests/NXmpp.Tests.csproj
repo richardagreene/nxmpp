@@ -86,7 +86,7 @@
     <Compile Include="MoqExtensions.cs" />
     <Compile Include="Sasl\DigestMD5AuthenticationTests.cs" />
     <Compile Include="Sasl\DigestMD5ChallengeTests.cs" />
-    <Compile Include="Sasl\DigestMD5MechanismTests.cs" />
+    <Compile Include="Sasl\DigestMD5SaslMechanismTests.cs" />
     <Compile Include="Sasl\XmppDigestMD5SaslMechanismTests.cs" />
     <Compile Include="XmppClientTests.cs" />
     <Compile Include="Net\XmppDnsTests.cs" />

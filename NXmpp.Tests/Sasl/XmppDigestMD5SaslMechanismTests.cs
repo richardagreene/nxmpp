@@ -22,6 +22,7 @@ using NUnit.Framework;
 using NXmpp.Extensions;
 using NXmpp.Sasl;
 using System;
+using NXmpp.Core;
 
 namespace NXmpp.Tests.Sasl
 {

@@ -38,8 +38,5 @@ namespace NXmpp.Extensions {
 			return Convert.ToBase64String(buffer);
 		}
 
-		//public static string FromBase64String(this string base64Text)
-		//{
-		//}
 	}
 }

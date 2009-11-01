@@ -19,6 +19,7 @@
 using System;
 using System.Xml.Linq;
 using System.Text;
+using NXmpp.Core;
 
 namespace NXmpp.Sasl
 {
@@ -31,9 +32,9 @@ namespace NXmpp.Sasl
 			_connection = connection;
 		}
 
-		public override void Initiate(string mechansim)
+		public override void Initiate(string mechanism)
 		{
-			var authElement = new XElement(XName.Get("auth", Namespaces.XmppSasl), new XAttribute(XName.Get("mechanism"), mechansim));
+			var authElement = new XElement(XName.Get("auth", Namespaces.XmppSasl), new XAttribute(XName.Get("mechanism"), mechanism));
 			_connection.Write(authElement);
 		}
 

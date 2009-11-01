@@ -37,7 +37,7 @@ namespace NXmpp.Sasl
 			SendRspAuthChallengeResposne();
 		}
 
-		public abstract void Initiate(string mechansim);
+		public abstract void Initiate(string mechanism);
 
 		public abstract string ReadInitialChallenge();
 
