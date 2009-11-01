@@ -22,7 +22,7 @@ using System.Text;
 
 namespace NXmpp.Sasl
 {
-	internal class XmppDigestMD5SaslMechanism : DigestMD5Mechanism
+	internal class XmppDigestMD5SaslMechanism : DigestMD5SaslMechanism
 	{
 		private readonly IXmppSyncConnection _connection;
 

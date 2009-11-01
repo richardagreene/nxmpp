@@ -75,7 +75,7 @@
     <Compile Include="Net\XmppHost.cs" />
     <Compile Include="Net\XmppDns.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sasl\DigestMD5Mechanism.cs" />
+    <Compile Include="Sasl\DigestMD5SaslMechanism.cs" />
     <Compile Include="Sasl\IXmppSyncConnection.cs" />
     <Compile Include="Sasl\XmppDigestMD5SaslMechanism.cs" />
     <Compile Include="XmppClientSettings.cs" />

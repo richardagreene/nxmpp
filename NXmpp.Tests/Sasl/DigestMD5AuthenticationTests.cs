@@ -27,7 +27,7 @@ namespace NXmpp.Tests.Sasl {
 		public void TestUsingRFCExampleData() {
 			//using values from RFC 2831
 			const string challenge = "realm=\"elwood.innosoft.com\",nonce=\"OA6MG9tEQGm2hh\",qop=\"auth\",algorithm=md5-sess,charset=utf-8";
-			var digestAuthentication = new DigestMD5Mechanism.DigestMD5Authentication(challenge);
+			var digestAuthentication = new DigestMD5SaslMechanism.DigestMD5Authentication(challenge);
 			string digestResponse = digestAuthentication.GetDigestResponse("chris", "secret", "elwood.innosoft.com", "elwood.innosoft.com", "OA6MHXh6VqTrRk", "imap");
 
 			//extract the response value from the digestResponse string

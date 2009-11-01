@@ -23,12 +23,12 @@ using NXmpp.Sasl;
 namespace NXmpp.Tests.Sasl
 {
 	[TestFixture]
-	public class DigestMD5MechanismTests
+	public class DigestMD5SaslMechanismTests
 	{
 		[Test]
 		public void Veriy_digest_md5_mechanism_behaviour()  //better name for this?
 		{
-			var mockDigestMD5Mechanism = new Mock<DigestMD5Mechanism>();
+			var mockDigestMD5Mechanism = new Mock<DigestMD5SaslMechanism>();
 
 			mockDigestMD5Mechanism.Setup(m => m.Initiate("DIGEST-MD5")).AtMostOnce();
 			mockDigestMD5Mechanism.Setup(m => m.ReadInitialChallenge()).Returns("realm=\"elwood.innosoft.com\",nonce=\"OA6MG9tEQGm2hh\",qop=\"auth\",algorithm=md5-sess,charset=utf-8").AtMostOnce();

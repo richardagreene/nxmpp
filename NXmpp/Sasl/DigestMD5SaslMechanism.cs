@@ -25,7 +25,7 @@ using System.Collections.Generic;
 
 namespace NXmpp.Sasl
 {
-	public abstract class DigestMD5Mechanism
+	public abstract class DigestMD5SaslMechanism
 	{
 		public void Authenticate(string username, string password, string realm, string hostname)
 		{
