@@ -17,14 +17,12 @@
             default value of non-expected invocations.
             </summary>
         </member>
-        <member name="M:Moq.IDefaultValueProvider.ProvideDefault(System.Reflection.MethodInfo,System.Object[])">
+        <member name="M:Moq.IDefaultValueProvider.ProvideDefault(System.Reflection.MethodInfo)">
             <summary>
             Provides a value for the given member and arguments.
             </summary>
             <param name="member">The member to provide a default 
             value for.</param>
-            <param name="arguments">Optional arguments passed in 
-            to the call that requires a default value.</param>
         </member>
         <member name="T:Moq.Language.Flow.IReturnsResult`1">
             <summary>
@@ -585,228 +583,6 @@
             TODO: remove this code when https://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=331583 
             is fixed.
             </devdoc>
-        </member>
-        <member name="T:Moq.ExpressionVisitor">
-            <summary>
-            Base class for visitors of expression trees.
-            </summary>
-            <remarks>
-            <para>Provides the functionality of the internal visitor base class that 
-            comes with Linq.</para>
-            <para>Matt's comments on the implementation:</para>
-            <para>
-            In this variant there is only one visitor class that dispatches calls to the general 
-            Visit function out to specific VisitXXX methods corresponding to different node types.  
-            Note not every node type gets it own method, for example all binary operators are 
-            treated in one VisitBinary method.  The nodes themselves do not directly participate 
-            in the visitation process. They are treated as just data. 
-            The reason for this is that the quantity of visitors is actually open ended. 
-            You can write your own. Therefore no semantics of visiting is coupled into the node classes.  
-            It’s all in the visitors.  The default visit behavior for node XXX is baked into the base 
-            class’s version of VisitXXX.
-            </para>
-            <para>
-            Another variant is that all VisitXXX methods return a node. 
-            The Expression tree nodes are immutable. In order to change the tree you must construct 
-            a new one. The default VisitXXX methods will construct a new node if any of its sub-trees change. 
-            If no changes are made then the same node is returned. That way if you make a change 
-            to a node (by making a new node) deep down in a tree, the rest of the tree is rebuilt 
-            automatically for you.
-            </para>
-            See: http://blogs.msdn.com/mattwar/archive/2007/07/31/linq-building-an-iqueryable-provider-part-ii.aspx.
-            </remarks>
-            <author>Matt Warren: http://blogs.msdn.com/mattwar</author>
-            <contributor>Documented by InSTEDD: http://www.instedd.org</contributor>
-        </member>
-        <member name="M:Moq.ExpressionVisitor.#ctor">
-            <summary>
-            Default constructor used by derived visitors.
-            </summary>
-        </member>
-        <member name="M:Moq.ExpressionVisitor.Visit(System.Linq.Expressions.Expression)">
-            <summary>
-            Visits the <see cref="T:System.Linq.Expressions.Expression"/>, determining which 
-            of the concrete Visit methods to call.
-            </summary>
-        </member>
-        <member name="M:Moq.ExpressionVisitor.VisitBinding(System.Linq.Expressions.MemberBinding)">
-            <summary>
-            Visits the generic <see cref="T:System.Linq.Expressions.MemberBinding"/>, determining and 
-            calling the appropriate Visit method according to the 
-            <see cref="P:System.Linq.Expressions.MemberBinding.BindingType"/>, which will result 
-            in calls to <see cref="M:Moq.ExpressionVisitor.VisitMemberAssignment(System.Linq.Expressions.MemberAssignment)"/>, 
-            <see cref="M:Moq.ExpressionVisitor.VisitMemberMemberBinding(System.Linq.Expressions.MemberMemberBinding)"/> or <see cref="M:Moq.ExpressionVisitor.VisitMemberListBinding(System.Linq.Expressions.MemberListBinding)"/>.
-            </summary>
-            <param name="binding"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Moq.ExpressionVisitor.VisitElementInitializer(System.Linq.Expressions.ElementInit)">
-            <summary>
-            Visits the <see cref="T:System.Linq.Expressions.ElementInit"/> initializer by 
-            calling the <see cref="M:Moq.ExpressionVisitor.VisitExpressionList(System.Collections.ObjectModel.ReadOnlyCollection{System.Linq.Expressions.Expression})"/> for the 
-            <see cref="P:System.Linq.Expressions.ElementInit.Arguments"/>.
-            </summary>
-        </member>
-        <member name="M:Moq.ExpressionVisitor.VisitUnary(System.Linq.Expressions.UnaryExpression)">
-            <summary>
-            Visits the <see cref="T:System.Linq.Expressions.UnaryExpression"/> expression by 
-            calling <see cref="M:Moq.ExpressionVisitor.Visit(System.Linq.Expressions.Expression)"/> with the <see cref="P:System.Linq.Expressions.UnaryExpression.Operand"/> expression.
-            </summary>
-        </member>
-        <member name="M:Moq.ExpressionVisitor.VisitBinary(System.Linq.Expressions.BinaryExpression)">
-            <summary>
-            Visits the <see cref="T:System.Linq.Expressions.BinaryExpression"/> by calling 
-            <see cref="M:Moq.ExpressionVisitor.Visit(System.Linq.Expressions.Expression)"/> with the <see cref="P:System.Linq.Expressions.BinaryExpression.Left"/>, 
-            <see cref="P:System.Linq.Expressions.BinaryExpression.Right"/> and <see cref="P:System.Linq.Expressions.BinaryExpression.Conversion"/> 
-            expressions.
-            </summary>
-        </member>
-        <member name="M:Moq.ExpressionVisitor.VisitTypeIs(System.Linq.Expressions.TypeBinaryExpression)">
-            <summary>
-            Visits the <see cref="T:System.Linq.Expressions.TypeBinaryExpression"/> by calling 
-            <see cref="M:Moq.ExpressionVisitor.Visit(System.Linq.Expressions.Expression)"/> with the <see cref="P:System.Linq.Expressions.TypeBinaryExpression.Expression"/> 
-            expression.
-            </summary>
-        </member>
-        <member name="M:Moq.ExpressionVisitor.VisitConstant(System.Linq.Expressions.ConstantExpression)">
-            <summary>
-            Visits the <see cref="T:System.Linq.Expressions.ConstantExpression"/>, by default returning the
-            same <see cref="T:System.Linq.Expressions.ConstantExpression"/> without further behavior.
-            </summary>
-        </member>
-        <member name="M:Moq.ExpressionVisitor.VisitConditional(System.Linq.Expressions.ConditionalExpression)">
-            <summary>
-            Visits the <see cref="T:System.Linq.Expressions.ConditionalExpression"/> by calling 
-            <see cref="M:Moq.ExpressionVisitor.Visit(System.Linq.Expressions.Expression)"/> with the <see cref="P:System.Linq.Expressions.ConditionalExpression.Test"/>, 
-            <see cref="P:System.Linq.Expressions.ConditionalExpression.IfTrue"/> and <see cref="P:System.Linq.Expressions.ConditionalExpression.IfFalse"/> 
-            expressions.
-            </summary>
-        </member>
-        <member name="M:Moq.ExpressionVisitor.VisitParameter(System.Linq.Expressions.ParameterExpression)">
-            <summary>
-            Visits the <see cref="T:System.Linq.Expressions.ParameterExpression"/> returning it 
-            by default without further behavior.
-            </summary>
-        </member>
-        <member name="M:Moq.ExpressionVisitor.VisitMemberAccess(System.Linq.Expressions.MemberExpression)">
-            <summary>
-            Visits the <see cref="T:System.Linq.Expressions.MemberExpression"/> by calling 
-            <see cref="M:Moq.ExpressionVisitor.Visit(System.Linq.Expressions.Expression)"/> with the <see cref="P:System.Linq.Expressions.MemberExpression.Expression"/> 
-            expression.
-            </summary>
-        </member>
-        <member name="M:Moq.ExpressionVisitor.VisitMethodCall(System.Linq.Expressions.MethodCallExpression)">
-            <summary>
-            Visits the <see cref="T:System.Linq.Expressions.MethodCallExpression"/> by calling 
-            <see cref="M:Moq.ExpressionVisitor.Visit(System.Linq.Expressions.Expression)"/> with the <see cref="P:System.Linq.Expressions.MethodCallExpression.Object"/> expression, 
-            and then <see cref="M:Moq.ExpressionVisitor.VisitExpressionList(System.Collections.ObjectModel.ReadOnlyCollection{System.Linq.Expressions.Expression})"/> with the <see cref="P:System.Linq.Expressions.MethodCallExpression.Arguments"/>.
-            </summary>
-            <param name="m"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Moq.ExpressionVisitor.VisitExpressionList(System.Collections.ObjectModel.ReadOnlyCollection{System.Linq.Expressions.Expression})">
-            <summary>
-            Visits the <see cref="T:System.Collections.ObjectModel.ReadOnlyCollection`1"/> by iterating 
-            the list and visiting each <see cref="T:System.Linq.Expressions.Expression"/> in it.
-            </summary>
-            <param name="original"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Moq.ExpressionVisitor.VisitMemberAssignment(System.Linq.Expressions.MemberAssignment)">
-            <summary>
-            Visits the <see cref="T:System.Linq.Expressions.MemberAssignment"/> by calling 
-            <see cref="M:Moq.ExpressionVisitor.Visit(System.Linq.Expressions.Expression)"/> with the <see cref="P:System.Linq.Expressions.MemberAssignment.Expression"/> expression.
-            </summary>
-            <param name="assignment"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Moq.ExpressionVisitor.VisitMemberMemberBinding(System.Linq.Expressions.MemberMemberBinding)">
-            <summary>
-            Visits the <see cref="T:System.Linq.Expressions.MemberMemberBinding"/> by calling 
-            <see cref="M:Moq.ExpressionVisitor.VisitBindingList(System.Collections.ObjectModel.ReadOnlyCollection{System.Linq.Expressions.MemberBinding})"/> with the <see cref="P:System.Linq.Expressions.MemberMemberBinding.Bindings"/>.
-            </summary>
-            <param name="binding"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Moq.ExpressionVisitor.VisitMemberListBinding(System.Linq.Expressions.MemberListBinding)">
-            <summary>
-            Visits the <see cref="T:System.Linq.Expressions.MemberListBinding"/> by calling 
-            <see cref="M:Moq.ExpressionVisitor.VisitElementInitializerList(System.Collections.ObjectModel.ReadOnlyCollection{System.Linq.Expressions.ElementInit})"/> with the 
-            <see cref="P:System.Linq.Expressions.MemberListBinding.Initializers"/>.
-            </summary>
-            <param name="binding"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Moq.ExpressionVisitor.VisitBindingList(System.Collections.ObjectModel.ReadOnlyCollection{System.Linq.Expressions.MemberBinding})">
-            <summary>
-            Visits the <see cref="T:System.Collections.ObjectModel.ReadOnlyCollection`1"/> by 
-            calling <see cref="M:Moq.ExpressionVisitor.VisitBinding(System.Linq.Expressions.MemberBinding)"/> for each <see cref="T:System.Linq.Expressions.MemberBinding"/> in the 
-            collection.
-            </summary>
-            <param name="original"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Moq.ExpressionVisitor.VisitElementInitializerList(System.Collections.ObjectModel.ReadOnlyCollection{System.Linq.Expressions.ElementInit})">
-            <summary>
-            Visits the <see cref="T:System.Collections.ObjectModel.ReadOnlyCollection`1"/> by 
-            calling <see cref="M:Moq.ExpressionVisitor.VisitElementInitializer(System.Linq.Expressions.ElementInit)"/> for each 
-            <see cref="T:System.Linq.Expressions.ElementInit"/> in the collection.
-            </summary>
-            <param name="original"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Moq.ExpressionVisitor.VisitLambda(System.Linq.Expressions.LambdaExpression)">
-            <summary>
-            Visits the <see cref="T:System.Linq.Expressions.LambdaExpression"/> by calling 
-            <see cref="M:Moq.ExpressionVisitor.Visit(System.Linq.Expressions.Expression)"/> with the <see cref="P:System.Linq.Expressions.LambdaExpression.Body"/> expression.
-            </summary>
-            <param name="lambda"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Moq.ExpressionVisitor.VisitNew(System.Linq.Expressions.NewExpression)">
-            <summary>
-            Visits the <see cref="T:System.Linq.Expressions.NewExpression"/> by calling 
-            <see cref="M:Moq.ExpressionVisitor.VisitExpressionList(System.Collections.ObjectModel.ReadOnlyCollection{System.Linq.Expressions.Expression})"/> with the <see cref="P:System.Linq.Expressions.NewExpression.Arguments"/> 
-            expressions.
-            </summary>
-            <param name="nex"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Moq.ExpressionVisitor.VisitMemberInit(System.Linq.Expressions.MemberInitExpression)">
-            <summary>
-            Visits the <see cref="T:System.Linq.Expressions.MemberInitExpression"/> by calling 
-            <see cref="M:Moq.ExpressionVisitor.VisitNew(System.Linq.Expressions.NewExpression)"/> with the <see cref="P:System.Linq.Expressions.MemberInitExpression.NewExpression"/> 
-            expression, then <see cref="M:Moq.ExpressionVisitor.VisitBindingList(System.Collections.ObjectModel.ReadOnlyCollection{System.Linq.Expressions.MemberBinding})"/> with the 
-            <see cref="P:System.Linq.Expressions.MemberInitExpression.Bindings"/>.
-            </summary>
-        </member>
-        <member name="M:Moq.ExpressionVisitor.VisitListInit(System.Linq.Expressions.ListInitExpression)">
-            <summary>
-            Visits the <see cref="T:System.Linq.Expressions.ListInitExpression"/> by calling 
-            <see cref="M:Moq.ExpressionVisitor.VisitNew(System.Linq.Expressions.NewExpression)"/> with the <see cref="P:System.Linq.Expressions.ListInitExpression.NewExpression"/> 
-            expression, and then <see cref="M:Moq.ExpressionVisitor.VisitElementInitializerList(System.Collections.ObjectModel.ReadOnlyCollection{System.Linq.Expressions.ElementInit})"/> with the 
-            <see cref="P:System.Linq.Expressions.ListInitExpression.Initializers"/>.
-            </summary>
-            <param name="init"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Moq.ExpressionVisitor.VisitNewArray(System.Linq.Expressions.NewArrayExpression)">
-            <summary>
-            Visits the <see cref="T:System.Linq.Expressions.NewArrayExpression"/> by calling 
-            <see cref="M:Moq.ExpressionVisitor.VisitExpressionList(System.Collections.ObjectModel.ReadOnlyCollection{System.Linq.Expressions.Expression})"/> with the <see cref="P:System.Linq.Expressions.NewArrayExpression.Expressions"/> 
-            expressions.
-            </summary>
-            <param name="na"></param>
-            <returns></returns>
-        </member>
-        <member name="M:Moq.ExpressionVisitor.VisitInvocation(System.Linq.Expressions.InvocationExpression)">
-            <summary>
-            Visits the <see cref="T:System.Linq.Expressions.InvocationExpression"/> by calling 
-            <see cref="M:Moq.ExpressionVisitor.VisitExpressionList(System.Collections.ObjectModel.ReadOnlyCollection{System.Linq.Expressions.Expression})"/> with the <see cref="P:System.Linq.Expressions.InvocationExpression.Arguments"/> 
-            expressions.
-            </summary>
-            <param name="iv"></param>
-            <returns></returns>
         </member>
         <member name="T:Moq.Evaluator">
             <summary>
@@ -1461,6 +1237,11 @@
 			retrieve a <see cref="T:Moq.Mock`1"/> from an object instance.
 		</summary>
         </member>
+        <member name="M:Moq.Mock.#ctor">
+            <summary>
+			Initializes a new instance of the <see cref="T:Moq.Mock"/> class.
+		</summary>
+        </member>
         <member name="M:Moq.Mock.Get``1(``0)">
             <summary>
 			Retrieves the mock object for the given object instance.
@@ -1487,7 +1268,7 @@
 			</code>
 		</example>
         </member>
-        <member name="M:Moq.Mock.GetObject">
+        <member name="M:Moq.Mock.OnGetObject">
             <summary>
 			Returns the mocked object value.
 		</summary>
@@ -1598,6 +1379,40 @@
 				Assert.True(presenter.IsCanceled);
 			</code>
 		</example>
+        </member>
+        <member name="M:Moq.Mock.As``1">
+            <summary>
+			Adds an interface implementation to the mock,
+			allowing setups to be specified for it.
+		</summary><remarks>
+			This method can only be called before the first use
+			of the mock <see cref="P:Moq.Mock.Object"/> property, at which
+			point the runtime type has already been generated
+			and no more interfaces can be added to it.
+			<para>
+				Also, <typeparamref name="TInterface"/> must be an
+				interface and not a class, which must be specified
+				when creating the mock instead.
+			</para>
+		</remarks><exception cref="T:System.InvalidOperationException">
+			The mock type
+			has already been generated by accessing the <see cref="P:Moq.Mock.Object"/> property.
+		</exception><exception cref="T:System.ArgumentException">
+			The <typeparamref name="TInterface"/> specified
+			is not an interface.
+		</exception><example>
+			The following example creates a mock for the main interface
+			and later adds <see cref="T:System.IDisposable"/> to it to verify
+			it's called by the consumer code:
+			<code>
+				var mock = new Mock&lt;IProcessor&gt;();
+				mock.Setup(x =&gt; x.Execute("ping"));
+
+				// add IDisposable interface
+				var disposable = mock.As&lt;IDisposable&gt;();
+				disposable.Setup(d =&gt; d.Dispose()).Verifiable();
+			</code>
+		</example><typeparam name="TInterface">Type of interface to cast the mock to.</typeparam>
         </member>
         <member name="M:Moq.Mock.Moq#IHideObjectMembers#GetType">
             <summary>
@@ -2088,55 +1903,55 @@
         <member name="P:Moq.Properties.Resources.NoMatchingCallsAtLeast">
              <summary>
                Looks up a localized string similar to {0}
-            Invocation was performed on the mock less than {2} times: {1}.
+            Expected invocation on the mock at least {2} times, but was {4} times: {1}.
              </summary>
         </member>
         <member name="P:Moq.Properties.Resources.NoMatchingCallsAtLeastOnce">
              <summary>
                Looks up a localized string similar to {0}
-            Invocation was not performed on the mock: {1}.
+            Expected invocation on the mock at least once, but was never performed: {1}.
              </summary>
         </member>
         <member name="P:Moq.Properties.Resources.NoMatchingCallsAtMost">
              <summary>
                Looks up a localized string similar to {0}
-            Invocation was performed on the mock more than {3} times: {1}.
+            Expected invocation on the mock at most {3} times, but was {4} times: {1}.
              </summary>
         </member>
         <member name="P:Moq.Properties.Resources.NoMatchingCallsAtMostOnce">
              <summary>
                Looks up a localized string similar to {0}
-            Invocation was performed on the mock more than once: {1}.
+            Expected invocation on the mock at most once, but was {4} times: {1}.
              </summary>
         </member>
         <member name="P:Moq.Properties.Resources.NoMatchingCallsBetweenExclusive">
              <summary>
                Looks up a localized string similar to {0}
-            Invocation was performed on the mock less or equal than {2} times or more or equal than {3} times: {1}.
+            Expected invocation on the mock between {2} and {3} times (Exclusive), but was {4} times: {1}.
              </summary>
         </member>
         <member name="P:Moq.Properties.Resources.NoMatchingCallsBetweenInclusive">
              <summary>
                Looks up a localized string similar to {0}
-            Invocation was performed on the mock less than {2} times or more than {3} times: {1}.
+            Expected invocation on the mock between {2} and {3} times (Inclusive), but was {4} times: {1}.
              </summary>
         </member>
         <member name="P:Moq.Properties.Resources.NoMatchingCallsExactly">
              <summary>
                Looks up a localized string similar to {0}
-            Invocation was not performed on the mock {2} times: {1}.
+            Expected invocation on the mock exactly {2} times, but was {4} times: {1}.
              </summary>
         </member>
         <member name="P:Moq.Properties.Resources.NoMatchingCallsNever">
              <summary>
                Looks up a localized string similar to {0}
-            Invocation should not have been performed on the mock: {1}.
+            Expected invocation on the mock should never have been performed, but was {4} times: {1}.
              </summary>
         </member>
         <member name="P:Moq.Properties.Resources.NoMatchingCallsOnce">
              <summary>
                Looks up a localized string similar to {0}
-            Invocation was performed more than once on the mock: {1}.
+            Expected invocation on the mock once, but was {4} times: {1}.
              </summary>
         </member>
         <member name="P:Moq.Properties.Resources.NoSetup">
@@ -2198,6 +2013,12 @@
             <summary>
               Looks up a localized string similar to Expression is not a property setter invocation..
             </summary>
+        </member>
+        <member name="P:Moq.Properties.Resources.SetupOnNonMemberMethod">
+             <summary>
+               Looks up a localized string similar to Invalid setup on a non-member method:
+            {0}.
+             </summary>
         </member>
         <member name="P:Moq.Properties.Resources.SetupOnNonOverridableMember">
              <summary>
@@ -2481,123 +2302,6 @@
             <c>from</c> values.
             </summary>
         </member>
-        <member name="T:Moq.DefaultValue">
-            <summary>
-            Determines the way default values are generated 
-            calculated for loose mocks.
-            </summary>
-        </member>
-        <member name="F:Moq.DefaultValue.Empty">
-            <summary>
-            Default behavior, which generates empty values for 
-            value types (i.e. default(int)), empty array and 
-            enumerables, and nulls for all other reference types.
-            </summary>
-        </member>
-        <member name="F:Moq.DefaultValue.Mock">
-            <summary>
-            Whenever the default value generated by <see cref="F:Moq.DefaultValue.Empty"/> 
-            is null, replaces this value with a mock (if the type 
-            can be mocked). 
-            </summary>
-            <remarks>
-            For sealed classes, a null value will be generated.
-            </remarks>
-        </member>
-        <member name="T:Moq.Match">
-            <summary>
-			Allows creation custom value matchers that can be used on setups and verification,
-			completely replacing the built-in <see cref="T:Moq.It"/> class with your own argument
-			matching rules.
-		</summary>
-        </member>
-        <member name="M:Moq.Match.Matcher``1">
-            <devdoc>
-            Provided for the sole purpose of rendering the delegate passed to the 
-            matcher constructor if no friendly render lambda is provided.
-            </devdoc>
-        </member>
-        <member name="T:Moq.Match`1">
-            <summary>
-			Allows creation custom value matchers that can be used on setups and verification,
-			completely replacing the built-in <see cref="T:Moq.It"/> class with your own argument
-			matching rules.
-		</summary><typeparam name="T">Type of the value to match.</typeparam><remarks>
-			The argument matching is used to determine whether a concrete
-			invocation in the mock matches a given setup. This
-			matching mechanism is fully extensible.
-		</remarks><example>
-			Creating a custom matcher is straightforward. You just need to create a method
-			that returns a value from a call to <see cref="M:Moq.Match`1.Create(System.Predicate{`0})"/> with 
-			your matching condition and optional friendly render expression:
-			<code>
-				public Order IsBigOrder()
-				{
-					return Match&lt;Order&gt;.Create(
-						o =&gt; o.GrandTotal &gt;= 5000, 
-						/* a friendly expression to render on failures */
-						() =&gt; IsBigOrder());
-				}
-			</code>
-			This method can be used in any mock setup invocation:
-			<code>
-				mock.Setup(m =&gt; m.Submit(IsBigOrder()).Throws&lt;UnauthorizedAccessException&gt;();
-			</code>
-			At runtime, Moq knows that the return value was a matcher and
-			evaluates your predicate with the actual value passed into your predicate.
-			<para>
-				Another example might be a case where you want to match a lists of orders
-				that contains a particular one. You might create matcher like the following:
-			</para>
-			<code>
-				public static class Orders
-				{
-					public static IEnumerable&lt;Order&gt; Contains(Order order)
-					{
-						return Match&lt;IEnumerable&lt;Order&gt;&gt;.Create(orders =&gt; orders.Contains(order));
-					}
-				}
-			</code>
-			Now we can invoke this static method instead of an argument in an
-			invocation:
-			<code>
-				var order = new Order { ... };
-				var mock = new Mock&lt;IRepository&lt;Order&gt;&gt;();
-
-				mock.Setup(x =&gt; x.Save(Orders.Contains(order)))
-					 .Throws&lt;ArgumentException&gt;();
-			</code>
-		</example>
-        </member>
-        <member name="M:Moq.Match`1.Create(System.Predicate{`0})">
-            <summary>
-			Initializes the match with the condition that
-			will be checked in order to match invocation
-			values.
-		</summary><param name="condition">The condition to match against actual values.</param><remarks>
-			 <seealso cref="T:Moq.Match`1"/>
-		</remarks>
-        </member>
-        <member name="M:Moq.Match`1.Create(System.Predicate{`0},System.Linq.Expressions.Expression{System.Func{`0}})">
-            <!-- No matching elements were found for the following include tag --><include file="Match.xdoc" path="docs/doc[@for=&quot;Match{T}.Create(condition,renderExpression&quot;]/*"/>
-        </member>
-        <member name="M:Moq.Match`1.Convert">
-            <!-- No matching elements were found for the following include tag --><include file="Match.xdoc" path="docs/doc[@for=&quot;Match{T}.Convert&quot;]/*"/>
-        </member>
-        <member name="M:Moq.Match`1.SetLastMatch``1(Moq.Match{``0})">
-            <devdoc>
-            This method is used to set an expression as the last matcher invoked, 
-            which is used in the SetupSet to allow matchers in the prop = value 
-            delegate expression. This delegate is executed in "fluent" mode in 
-            order to capture the value being set, and construct the corresponding 
-            methodcall.
-            This is also used in the MatcherFactory for each argument expression.
-            This method ensures that when we execute the delegate, we 
-            also track the matcher that was invoked, so that when we create the 
-            methodcall we build the expression using it, rather than the null/default 
-            value returned from the actual invocation.
-            </devdoc>
-        </member>
         <member name="T:Moq.Mock`1">
             <summary>
 			Provides a mock implementation of <typeparamref name="T"/>.
@@ -2692,7 +2396,7 @@
 			<code>var mock = new Mock&lt;MyProvider&gt;(someArgument, 25);</code>
 		</example><param name="behavior">Behavior of the mock.</param><param name="args">Optional constructor arguments if the mocked type is a class.</param>
         </member>
-        <member name="M:Moq.Mock`1.GetObject">
+        <member name="M:Moq.Mock`1.OnGetObject">
             <summary>
             Returns the mocked object value.
             </summary>
@@ -3054,40 +2758,6 @@
 			<paramref name="times"/>.
 		</exception><param name="times">The number of times a method is allowed to be called.</param><param name="setterExpression">Expression to verify.</param><param name="failMessage">Message to show if verification fails.</param>
         </member>
-        <member name="M:Moq.Mock`1.As``1">
-            <summary>
-			Adds an interface implementation to the mock,
-			allowing setups to be specified for it.
-		</summary><remarks>
-			This method can only be called before the first use
-			of the mock <see cref="P:Moq.Mock`1.Object"/> property, at which
-			point the runtime type has already been generated
-			and no more interfaces can be added to it.
-			<para>
-				Also, <typeparamref name="TInterface"/> must be an
-				interface and not a class, which must be specified
-				when creating the mock instead.
-			</para>
-		</remarks><exception cref="T:System.InvalidOperationException">
-			The mock type
-			has already been generated by accessing the <see cref="P:Moq.Mock`1.Object"/> property.
-		</exception><exception cref="T:System.ArgumentException">
-			The <typeparamref name="TInterface"/> specified
-			is not an interface.
-		</exception><example>
-			The following example creates a mock for the main interface
-			and later adds <see cref="T:System.IDisposable"/> to it to verify
-			it's called by the consumer code:
-			<code>
-				var mock = new Mock&lt;IProcessor&gt;();
-				mock.Setup(x =&gt; x.Execute("ping"));
-
-				// add IDisposable interface
-				var disposable = mock.As&lt;IDisposable&gt;();
-				disposable.Setup(d =&gt; d.Dispose()).Verifiable();
-			</code>
-		</example><typeparam name="TInterface">Type of interface to cast the mock to.</typeparam>
-        </member>
         <member name="M:Moq.Mock`1.Raise(System.Action{`0},System.EventArgs)">
             <summary>
 			Raises the event referenced in <paramref name="eventExpression"/> using
@@ -3171,6 +2841,143 @@
             <summary>
 			Exposes the mocked object instance.
 		</summary>
+        </member>
+        <member name="T:Moq.DefaultValue">
+            <summary>
+            Determines the way default values are generated 
+            calculated for loose mocks.
+            </summary>
+        </member>
+        <member name="F:Moq.DefaultValue.Empty">
+            <summary>
+            Default behavior, which generates empty values for 
+            value types (i.e. default(int)), empty array and 
+            enumerables, and nulls for all other reference types.
+            </summary>
+        </member>
+        <member name="F:Moq.DefaultValue.Mock">
+            <summary>
+            Whenever the default value generated by <see cref="F:Moq.DefaultValue.Empty"/> 
+            is null, replaces this value with a mock (if the type 
+            can be mocked). 
+            </summary>
+            <remarks>
+            For sealed classes, a null value will be generated.
+            </remarks>
+        </member>
+        <member name="T:IQToolkit.ExpressionReplacer">
+            <summary>
+            Replaces references to one specific instance of an expression node with another node
+            </summary>
+        </member>
+        <member name="T:IQToolkit.Query`1">
+            <summary>
+            A default implementation of IQueryable for use with QueryProvider
+            </summary>
+        </member>
+        <member name="T:IQToolkit.QueryProvider">
+            <summary>
+            A basic abstract LINQ query provider
+            </summary>
+        </member>
+        <member name="T:IQToolkit.TypeHelper">
+            <summary>
+            Type related helper methods
+            </summary>
+        </member>
+        <member name="T:Moq.Match">
+            <summary>
+			Allows creation custom value matchers that can be used on setups and verification,
+			completely replacing the built-in <see cref="T:Moq.It"/> class with your own argument
+			matching rules.
+		</summary>
+        </member>
+        <member name="M:Moq.Match.Matcher``1">
+            <devdoc>
+            Provided for the sole purpose of rendering the delegate passed to the 
+            matcher constructor if no friendly render lambda is provided.
+            </devdoc>
+        </member>
+        <member name="T:Moq.Match`1">
+            <summary>
+			Allows creation custom value matchers that can be used on setups and verification,
+			completely replacing the built-in <see cref="T:Moq.It"/> class with your own argument
+			matching rules.
+		</summary><typeparam name="T">Type of the value to match.</typeparam><remarks>
+			The argument matching is used to determine whether a concrete
+			invocation in the mock matches a given setup. This
+			matching mechanism is fully extensible.
+		</remarks><example>
+			Creating a custom matcher is straightforward. You just need to create a method
+			that returns a value from a call to <see cref="M:Moq.Match`1.Create(System.Predicate{`0})"/> with 
+			your matching condition and optional friendly render expression:
+			<code>
+				public Order IsBigOrder()
+				{
+					return Match&lt;Order&gt;.Create(
+						o =&gt; o.GrandTotal &gt;= 5000, 
+						/* a friendly expression to render on failures */
+						() =&gt; IsBigOrder());
+				}
+			</code>
+			This method can be used in any mock setup invocation:
+			<code>
+				mock.Setup(m =&gt; m.Submit(IsBigOrder()).Throws&lt;UnauthorizedAccessException&gt;();
+			</code>
+			At runtime, Moq knows that the return value was a matcher and
+			evaluates your predicate with the actual value passed into your predicate.
+			<para>
+				Another example might be a case where you want to match a lists of orders
+				that contains a particular one. You might create matcher like the following:
+			</para>
+			<code>
+				public static class Orders
+				{
+					public static IEnumerable&lt;Order&gt; Contains(Order order)
+					{
+						return Match&lt;IEnumerable&lt;Order&gt;&gt;.Create(orders =&gt; orders.Contains(order));
+					}
+				}
+			</code>
+			Now we can invoke this static method instead of an argument in an
+			invocation:
+			<code>
+				var order = new Order { ... };
+				var mock = new Mock&lt;IRepository&lt;Order&gt;&gt;();
+
+				mock.Setup(x =&gt; x.Save(Orders.Contains(order)))
+					 .Throws&lt;ArgumentException&gt;();
+			</code>
+		</example>
+        </member>
+        <member name="M:Moq.Match`1.Create(System.Predicate{`0})">
+            <summary>
+			Initializes the match with the condition that
+			will be checked in order to match invocation
+			values.
+		</summary><param name="condition">The condition to match against actual values.</param><remarks>
+			 <seealso cref="T:Moq.Match`1"/>
+		</remarks>
+        </member>
+        <member name="M:Moq.Match`1.Create(System.Predicate{`0},System.Linq.Expressions.Expression{System.Func{`0}})">
+            <!-- No matching elements were found for the following include tag --><include file="Match.xdoc" path="docs/doc[@for=&quot;Match{T}.Create(condition,renderExpression&quot;]/*"/>
+        </member>
+        <member name="M:Moq.Match`1.Convert">
+            <!-- No matching elements were found for the following include tag --><include file="Match.xdoc" path="docs/doc[@for=&quot;Match{T}.Convert&quot;]/*"/>
+        </member>
+        <member name="M:Moq.Match`1.SetLastMatch``1(Moq.Match{``0})">
+            <devdoc>
+            This method is used to set an expression as the last matcher invoked, 
+            which is used in the SetupSet to allow matchers in the prop = value 
+            delegate expression. This delegate is executed in "fluent" mode in 
+            order to capture the value being set, and construct the corresponding 
+            methodcall.
+            This is also used in the MatcherFactory for each argument expression.
+            This method ensures that when we execute the delegate, we 
+            also track the matcher that was invoked, so that when we create the 
+            methodcall we build the expression using it, rather than the null/default 
+            value returned from the actual invocation.
+            </devdoc>
         </member>
         <member name="T:Moq.MockLegacyExtensions">
             <summary>
@@ -3382,6 +3189,46 @@
             <param name="expression">Expression to verify.</param>
             <typeparam name="TProperty">Type of the property to verify. Typically omitted as it can 
             be inferred from the expression's return type.</typeparam>
+        </member>
+        <member name="T:Moq.Mocks">
+            <summary>
+            Allows querying the universe of mocks for those that behave 
+            according to the query specification.
+            </summary>
+        </member>
+        <member name="M:Moq.Mocks.Query``1">
+            <summary>
+            Creates a query for mocks of the given type.
+            </summary>
+            <typeparam name="T">The type of mocked object to query.</typeparam>
+        </member>
+        <member name="M:Moq.Mocks.CreateReal``1">
+            <summary>
+            Method that is turned into the actual call from .Query{T}, to 
+            transform the queryable query into a normal enumerable query.
+            This method should not be used by consumers.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <returns></returns>
+        </member>
+        <member name="F:Moq.Mocks.FluentMockVisitor.isFirst">
+            <summary>
+            The first method call or member access will be the 
+            last segment of the expression (depth-first traversal), 
+            which is the one we have to Setup rather than FluentMock.
+            And the last one is the one we have to Mock.Get rather 
+            than FluentMock.
+            </summary>
+        </member>
+        <member name="T:Moq.QueryableMockExtensions">
+            <summary>
+            Helper extensions that are used by the query translator.
+            </summary>
+        </member>
+        <member name="M:Moq.QueryableMockExtensions.FluentMock``2(Moq.Mock{``0},System.Linq.Expressions.Expression{System.Func{``0,``1}})">
+            <summary>
+            Retrieves a fluent mock from the given setup expression.
+            </summary>
         </member>
         <member name="T:Moq.Stub.StubExtensions">
             <summary>
