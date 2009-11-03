@@ -20,15 +20,15 @@ using System;
 
 namespace NXmpp.Net
 {
-	internal class XmppHost
+	public class XmppHost
 	{
-		internal XmppHost(string hostName, UInt16 port)
+		public XmppHost(string hostName, UInt16 port)
 		{
 			HostName = hostName;
 			Port = port;
 		}
 
-		internal string HostName { get; private set; }
-		internal ushort Port { get; private set; }
+		public string HostName { get; private set; }
+		public ushort Port { get; private set; }
 	}
 }

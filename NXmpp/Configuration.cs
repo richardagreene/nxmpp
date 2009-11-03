@@ -16,17 +16,15 @@
 
 #endregion
 
-namespace NXmpp.Net
+using NXmpp.Net;
+
+namespace NXmpp
 {
-	internal class DnDnsQueryRequestFactory : IDnsQueryRequestFactory
+	public class Configuration
 	{
-		#region IDnsQueryRequestFactory Members
-
-		public IDnsQueryRequest Create()
-		{
-			return new DnDnsQueryRequestAdapter();
-		}
-
-		#endregion
+		/// <summary>
+		/// Specify the XmppHost to connection to. If null, xmpp hosts will be resolved using dns srv records and / or the jid name.
+		/// </summary>
+		public XmppHost XmppHost { get; set; }
 	}
 }

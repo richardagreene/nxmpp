@@ -20,6 +20,7 @@ using Common.Logging;
 using Moq;
 using NUnit.Framework;
 using NXmpp.Net;
+using System.Linq;
 
 namespace NXmpp.Tests.Net
 {
@@ -37,42 +38,24 @@ namespace NXmpp.Tests.Net
 		}
 
 		[Test]
-		public void Get_hosts_should_call_dependency_factory_methods()
-		{
-			var dnsQueryRequestFactoryMock = new Mock<IDnsQueryRequestFactory>();
-			dnsQueryRequestFactoryMock.Setup(m => m.Create()).Returns(() => new Mock<IDnsQueryRequest>(MockBehavior.Loose).Object);
-
-			try
-			{
-				XmppDns.GetHosts(dnsQueryRequestFactoryMock.Object, "domain", _logger);
-			}
-			catch {}
-			dnsQueryRequestFactoryMock.Verify(m => m.Create());
-		}
-
-		[Test]
-		public void When_no_dns_servers_respond_should_return_domain_as_host()
-		{
-
-			var dnsQueryRequestFactoryMock = new Mock<IDnsQueryRequestFactory>();
-			dnsQueryRequestFactoryMock.Setup(m => m.Create()).Returns(() => new Mock<IDnsQueryRequest>(MockBehavior.Loose).Object);
-
-			const string domain = "domain.com";
-			XmppHost[] xmppHosts = XmppDns.GetHosts(dnsQueryRequestFactoryMock.Object, domain, _logger);
-
-			Assert.NotNull(xmppHosts);
-			Assert.AreEqual(1, xmppHosts.Length);
-			Assert.AreEqual(domain, xmppHosts[0].HostName);
-		}
-
-		[Test]
 		public void When_srv_query_returns_response_should_return_XmppHosts() //test requires internet connection.
 		{
 			const string domain = "gmail.com";
-
-			XmppHost[] xmppHosts = XmppDns.GetHosts(new DnDnsQueryRequestFactory(), domain, _logger);
+			var xmppDns = new XmppDns(_logger);
+			XmppHost[] xmppHosts = xmppDns.GetXmppHosts(domain).ToArray();
 			Assert.NotNull(xmppHosts);
 			Assert.True(xmppHosts.Length > 1);
+			Assert.AreEqual(domain, xmppHosts[xmppHosts.Length - 1].HostName);
+		}
+
+		[Test]
+		public void When_query_returns_last_entry_should_be_domain()
+		{
+			const string domain = "domain.com";
+			var xmppDns = new XmppDns(_logger);
+			XmppHost[] xmppHosts = xmppDns.GetXmppHosts(domain).ToArray();
+			Assert.NotNull(xmppHosts);
+			Assert.True(xmppHosts.Length >= 1);
 			Assert.AreEqual(domain, xmppHosts[xmppHosts.Length - 1].HostName);
 		}
 	}

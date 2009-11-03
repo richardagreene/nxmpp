@@ -16,10 +16,12 @@
 
 #endregion
 
+using System.Collections.Generic;
+
 namespace NXmpp.Net
 {
-	internal interface IDnsQueryRequestFactory
+	internal interface IXmppDns
 	{
-		IDnsQueryRequest Create();
+		IEnumerable<XmppHost> GetXmppHosts(string domain);
 	}
 }

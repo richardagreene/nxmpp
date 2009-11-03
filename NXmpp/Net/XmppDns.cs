@@ -21,20 +21,29 @@ using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using Common.Logging;
+using DnDns.Query;
+using DnDns.Records;
+using DnDns.Enums;
+using System;
 
 namespace NXmpp.Net
 {
-	internal static class XmppDns
+	internal class XmppDns : IXmppDns
 	{
+		private readonly ILog _logger;
+
+		internal XmppDns(ILog logger)
+		{
+			_logger = logger;
+		}
+
 		/// <summary>
 		/// Gets a array of XmppHosts for a given domain ordered by weight. First by looking up the srv records for the domain, then adding the domain as the host for fall back.
 		/// Does not attempt to resolve IP addresses.
 		/// </summary>
-		/// <param name="dnsQueryRequestFactory"></param>
 		/// <param name="domain"></param>
-		/// <param name="log"></param>
-		/// <returns></returns>
-		public static XmppHost[] GetHosts(IDnsQueryRequestFactory dnsQueryRequestFactory, string domain, ILog log)
+		/// <returns>An array of xmpp hosts.</returns>
+		public IEnumerable<XmppHost> GetXmppHosts(string domain)
 		{
 			var nameServers = new List<IPAddress>();
 			NetworkInterface[] allNetworkInterfaces = NetworkInterface.GetAllNetworkInterfaces();
@@ -53,18 +62,22 @@ namespace NXmpp.Net
 			var xmppSrvRecords = new List<XmppSrvRecord>();
 			string srvRecord = "_xmpp-server._tcp." + domain;
 
-			IDnsQueryRequest dnsQueryRequest = dnsQueryRequestFactory.Create();
-
 			//loop through each dns server and attempt to resolve for xmpp server hosts. Loop stops when a dns server is reachable and returns records
-			foreach (IPAddress nameServerAddress in nameServers)
+			foreach (IPAddress nameServer in nameServers)
 			{
 				try
 				{
-					xmppSrvRecords.AddRange(dnsQueryRequest.GetXmppSrvRecords(nameServerAddress.ToString(), srvRecord));
+					XmppSrvRecord[] xmppSrvRecordsLookupResult = GetXmppSrvRecords(nameServer, srvRecord);
+
+					// "if the result of the SRV lookup is a single RR with a Target of ".", i.e. the root domain, the initiating 
+					// entity MUST abort SRV processing but SHOULD attempt a fallback resolution as described below ( draft-ietf-xmpp-3920bis-03#section-4.2 )
+					// TODO: test this. (need to seperate dependency on DnDns in GetXmppSrvRecords() below)
+					if (xmppSrvRecordsLookupResult.Length == 1 && xmppSrvRecordsLookupResult[0].HostName == ".") break;
+					xmppSrvRecords.AddRange(GetXmppSrvRecords(nameServer, srvRecord));
 				}
 				catch (SocketException ex)
 				{
-					log.Error("Dns server unreachable. " + ex);
+					_logger.Error("DNS server unreachable. " + ex);
 					continue;
 				}
 				if (xmppSrvRecords.Count > 0) break;
@@ -75,9 +88,41 @@ namespace NXmpp.Net
 			return xmppHosts.ToArray();
 		}
 
-		public static XmppHost XmppSrvRecordToXmppHostConverter(XmppSrvRecord xmppSrvRecord)
+		private static XmppSrvRecord[] GetXmppSrvRecords(IPAddress nameServer, string host)
+		{
+			//TODO: cache DNS lookups according to srvRecord.DnsHeader.TimeToLive
+
+			var request = new DnsQueryRequest();
+			DnsQueryResponse response = request.Resolve(nameServer.ToString(), host, NsType.SRV, NsClass.INET, ProtocolType.Udp);
+
+			var xmppSrvRecords = new List<XmppSrvRecord>();
+			foreach (IDnsRecord answer in response.Answers)
+			{
+				var srvRecord = (SrvRecord) answer;
+				xmppSrvRecords.Add(new XmppSrvRecord { HostName = srvRecord.HostName, Port = srvRecord.Port, Weight = srvRecord.Weight});
+			}
+			return xmppSrvRecords.ToArray();
+		}
+
+		private static XmppHost XmppSrvRecordToXmppHostConverter(XmppSrvRecord xmppSrvRecord)
 		{
 			return new XmppHost(xmppSrvRecord.HostName, xmppSrvRecord.Port);
+		}
+
+		private class XmppSrvRecord : IComparable<XmppSrvRecord>
+		{
+			internal string HostName { get; set; }
+			internal ushort Port { get; set; }
+			internal ushort Weight { private get; set; }
+
+			#region IComparable<XmppSrvRecord> Members
+
+			public int CompareTo(XmppSrvRecord other)
+			{
+				return Weight.CompareTo(other.Weight);
+			}
+
+			#endregion
 		}
 	}
 }

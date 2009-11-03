@@ -59,6 +59,7 @@
     <Compile Include="..\SharedAssemblyInfo.cs">
       <Link>SharedAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Configuration.cs" />
     <Compile Include="ConnectionStates\ConnectionStateBase.cs" />
     <Compile Include="ConnectionStates\ConnectionStatesEnumerable.cs" />
     <Compile Include="ConnectionStates\TcpBindingState.cs" />
@@ -67,11 +68,7 @@
     <Compile Include="JId.cs" />
     <Compile Include="IXmppClient.cs" />
     <Compile Include="Namespaces.cs" />
-    <Compile Include="Net\DnDnsQueryRequestAdapter.cs" />
-    <Compile Include="Net\DnDnsQueryRequestFactory.cs" />
-    <Compile Include="Net\IDnsQueryRequest.cs" />
-    <Compile Include="Net\IDnsQueryRequestFactory.cs" />
-    <Compile Include="Net\XmppSrvRecord.cs" />
+    <Compile Include="Net\IXmppDns.cs" />
     <Compile Include="Net\XmppHost.cs" />
     <Compile Include="Net\XmppDns.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
