@@ -1,18 +1,45 @@
 <?xml version="1.0"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
+  <Import Project="C:\Development\nxmpp\Libs\MSBuild\MSBuild.Community.Tasks.Targets" />
+  
   <PropertyGroup>
-    <ProjectName>nxmpp</ProjectName>
-    <ProjectLocation>$(SystemDrive)\$(WorkingFolder)\$(ProjectName)</ProjectLocation>
+    <ProjectName>NXmpp</ProjectName>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <ProjectDir>C:\Development\$(ProjectName)</ProjectDir >
+    <ClassLibraryOutputDirectory>bin\$(Configuration)</ClassLibraryOutputDirectory>
+    <SolutionFile>$(ProjectDir)\$(ProjectName).sln</SolutionFile >
+    <MonoDevelop>C:\Program Files\MonoDevelop\bin</MonoDevelop >
   </PropertyGroup>
-
-   <!-- ##################### -->
+ 
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <!-- Debug Properties -->
+  </PropertyGroup>
+  
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <!-- Release Properties -->
+  </PropertyGroup>
+  
+  <!-- ##################### -->
    <!--    Build Opions       -->
    <!-- ##################### -->
    
     <Target Name="Build">
       <Message Text="Building the debug version of the solution." />
-      <MSBuild Projects="$(ProjectName).sln" Properties="Configuration=Debug;"/> 
+      <MSBuild Projects="$(SolutionFile)" Targets="Build" Properties="$(Condition)"/> 
     </Target>
-   
+  
+    <Target Name="Mono">
+      <Message Text="Building a Mono version of the solution." />
+      <Exec Command="&quot;$(MonoDevelop)\mdrun&quot; build $(ProjectName).sln" />
+    </Target>
+
+    <Target Name="UnitTests" DependsOnTargets="Build">
+      <Message Text="Running the UnitTests" />
+        <CreateItem Include="$(ProjectDir)\NXmpp.Tests\$(ClassLibraryOutputDirectory)\NXmpp.Tests.dll">
+          <Output TaskParameter="Include" ItemName="TestAssembly" />
+        </CreateItem>
+        <NUnit Assemblies="@(TestAssembly)" ToolPath="$(ProjectDir)\Libs\NUnit" />
+      </Target>
+    
 </Project>
